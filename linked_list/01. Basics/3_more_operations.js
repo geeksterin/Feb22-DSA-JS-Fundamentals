@@ -1,8 +1,3 @@
-// create a linked list
-/**
- * data -> data
- * location -> next
- */
 class LinkedListNode {
     constructor(data) {
         this.data = data;
@@ -14,13 +9,11 @@ class LinkedListNode {
     }
 }
 
-// head
-// tail
 class LinkedList {
     constructor(data) {
         this.head = new LinkedListNode(data);
+        this.tail = this.head;
         this.length = 1;
-        console.log('new node added', this.length);
     }
 
     getHead() {
@@ -28,6 +21,9 @@ class LinkedList {
     }
 
     /**
+     * Time complexity = O(n)
+     *      - By taking 1 extra space, we can optimize time
+     *        complexity to O(1)
      * Insertion at the end of list
      * @param data
      */
@@ -35,13 +31,15 @@ class LinkedList {
         if (this.head === null) {
             this.head = new LinkedListNode(data);
         }
-        let nextNode = this.getHead();
-        while(nextNode && nextNode.next !== null) {
-            nextNode = nextNode.next;
-        }
-        nextNode.next = new LinkedListNode(data);
+        // let nextNode = this.getHead();
+        // while(nextNode && nextNode.next !== null) {
+        //     nextNode = nextNode.next;
+        // }
+        // nextNode.next = new LinkedListNode(data);
+        // this.length++;
+        this.tail.next = new LinkedListNode(data);
+        this.tail = this.tail.next;
         this.length++;
-        console.log('new node added', this.length);
     }
 
     // /**
@@ -82,8 +80,8 @@ class LinkedList {
         }
     }
 
-    printHierarchy() {
-        // TODO:
+    printTail() {
+        console.log('tail-', this.tail);
     }
 
     /**
@@ -96,50 +94,57 @@ class LinkedList {
             return null;
         }
         while(nextNode
-            && nextNode.next
-            && nextNode.next.next) {
+        && nextNode.next
+        && nextNode.next.next) {
             nextNode = nextNode.next;
         }
         result = nextNode.next;
         nextNode.next = null;
+        this.tail = nextNode;
         this.length--;
+        console.log('last node deleted-', result);
         return result;
     }
 }
-
-
 let list1 = new LinkedList("first node");
-list1.print();
 list1.add("second node");
-list1.print();
 list1.add("third node");
 list1.add("fourth node");
-console.log('size so far', list1.size());
 list1.add("fifth node");
 list1.add("sixth node");
+
+/**
+ * insert at the beginning of the provided linked list
+ */
+function insertAtBeginning(data, list) {
+    let newHead = new LinkedListNode(data);
+    if (list.head !== null) {
+        newHead.next = list.head;
+        list.head = newHead;
+    } else {
+        list.head = newHead;
+    }
+}
+
+insertAtBeginning("0th node", list1);
 list1.print();
-console.log('size so far', list1.size());
-let deletedNode = list1.deleteLast()
+
+
+function insertAtNthNode(data, list, nthNode) {
+    let currNode = list.head;
+    while(currNode) {
+        if(currNode.data === nthNode) {
+            let newNode = new LinkedListNode(data);
+            newNode.next = currNode.next;
+            currNode.next = newNode;
+            break;
+        }
+        currNode = currNode.next;
+    }
+
+}
+
+insertAtNthNode("new node", list1, "fourth node");
 list1.print();
-console.log('size so far', list1.size());
-console.log('deleted node', deletedNode);
 
-
-
-
-
-
-
-
-// traversal
-
-// search
-
-// insertion at beginning
-
-// insertion at end
-
-// insertion at given node
-
-// deletion
-
+// todo: delete first, delete last.
