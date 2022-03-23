@@ -11,3 +11,6 @@ class User {
 
 let user = new User("john", 20);
 user.display();
+user.address = '123, park street';
+
+console.log(JSON.stringify(user));
