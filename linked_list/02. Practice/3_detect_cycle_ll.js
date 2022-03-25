@@ -31,6 +31,7 @@ class LinkedList {
         if (this.head === null) {
             this.head = new LinkedListNode(data);
             this.tail = this.head;
+            this.length++;
             return;
         }
         // let nextNode = this.getHead();

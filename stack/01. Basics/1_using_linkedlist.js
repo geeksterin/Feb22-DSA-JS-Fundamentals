@@ -5,7 +5,7 @@ class LinkedListNode {
     }
 
     display() {
-        console.log('node data-', this.data);
+        console.log(this.data);
     }
 }
 
@@ -31,7 +31,6 @@ class LinkedList {
         if (this.head === null) {
             this.head = new LinkedListNode(data);
             this.tail = this.head;
-            this.length++;
             return;
         }
         // let nextNode = this.getHead();
@@ -109,82 +108,84 @@ class LinkedList {
         return result;
     }
 }
-/**
- * we are given 2 sorted linked lists.
- * Merge them and the result should still be sorted.
- *
- * list1: 1 -> 3 -> 5 -> 9 -> 11
- * list2: 1 -> 2 -> 4 -> 6
- *
- * Output should be
- * 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 9 -> 11
- */
 
-/**
- * - Take 2 pointers - pointing to start of both the lists
- * - Compare the elements and move smaller element to the new list
- * - Shift the head to next in the list from which we have moved
- *   the element to the new list
- *
- *   Time complexity - O(n + m) [n - size(list1) & m - size(list2)]
- *   Space complexity - O(n + m) [n - size(list1) & m - size(list2)]
- */
-function mergeSortedLists(list1, list2) {
-    let list1Pointer = list1.head;
-    let list2Pointer = list2.head;
-    let newList = new LinkedList();
-    let newListPointer = newList.head;
+class Stack {
+    #list;
 
-    if (list1Pointer.data >= list2Pointer.data) {
-        newListPointer = list2Pointer;
-        list2Pointer = list2Pointer.next;
-    } else {
-        newListPointer = list1Pointer;
-        list1Pointer = list1Pointer.next;
+    constructor() {
+        this.#list = new LinkedList();
     }
-    newList.head = newListPointer;
 
-    while (list1Pointer && list2Pointer) {
-        if (list1Pointer.data > list2Pointer.data) {
-            newListPointer.next = list2Pointer;
-            list2Pointer = list2Pointer.next;
+    #insertAtBeginning(data, list) {
+        let newHead = new LinkedListNode(data);
+        if (list.head !== null) {
+            newHead.next = list.head;
+            list.head = newHead;
         } else {
-            newListPointer.next = list1Pointer;
-            list1Pointer = list1Pointer.next;
+            list.head = newHead;
         }
-        newListPointer = newListPointer.next;
+        list.length++;
     }
 
-    if (list1Pointer) {
-        newListPointer.next = list1Pointer;
+    push(value) {
+        this.#insertAtBeginning(value, this.#list);
     }
 
-    if (list2Pointer) {
-        newListPointer.next = list2Pointer;
+    /**
+     * Lets us look at the top element of the stack
+     */
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.#list.head.data;
     }
 
-    // todo: iterate to the end and fix the tail pointer
-    // newList.tail = newListPointer; // this is wrong
-    return newList;
+    #removeFromBeginning(list) {
+        let headToBeRemoved = list.head;
+        list.head = list.head.next;
+        return headToBeRemoved.data;
+    }
+
+    pop() {
+        return this.#removeFromBeginning(this.#list);
+    }
+
+    size() {
+        return this.#list.size();
+    }
+
+    isEmpty() {
+        return this.size() === 0;
+    }
+
+    clear() {
+        this.#list = new LinkedList();
+    }
+
+    print() {
+        console.log('top')
+        this.#list.print();
+    }
 }
 
-let list1 = new LinkedList();
-list1.add(1);
-list1.add(3);
-list1.add(5);
-list1.add(9);
-list1.add(11);
-console.log('list1');
-list1.print();
+let stack = new Stack();
+console.log('is stack empty', stack.isEmpty(), stack.size());
+console.log('top', stack.peek());
+stack.push(1);
+stack.push(2);
+console.log('top', stack.peek());
+console.log('popped element', stack.pop());
+console.log('top', stack.peek());
+stack.push(10);
+stack.push(4);
 
-let list2 = new LinkedList();
-list2.add(1);
-list2.add(2);
-list2.add(4);
-list2.add(6);
-console.log('list2');
-list2.print();
+stack.print();
 
-let newList = mergeSortedLists(list1, list2);
-console.log('new list');
-newList.print();
+console.log('top', stack.peek());
+console.log('is stack empty', stack.isEmpty());
+stack.push(14);
+
+console.log('top', stack.peek());
+stack.clear()
+console.log('is stack empty', stack.isEmpty());
