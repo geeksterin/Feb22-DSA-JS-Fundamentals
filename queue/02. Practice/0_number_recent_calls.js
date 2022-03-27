@@ -1,13 +1,18 @@
 /**
- * Given a string, "abcdsade",
- * return the first non-repeating character in this string.
- */
-
-/**
- * keep a track of frequency of every character,
- * and also put characters in the queue.
- * At the end, dequeue the queue and the first character with
- * frequency =1 is the answer
+ * In this problem, RecentCallCounter-
+ * - Count the number of calls in last 3000 seconds.
+ * - ping(time [int])
+ * - return the number of calls.
+ *
+ * Input:
+ *  a1: ["RecentCounter", "ping", "ping", "ping", "ping"]
+ *   RecentCounter -> initialize the call counter
+ *   ping -> call
+ *  a2: [[],               [1],   [100],  [3001],  [3002]]
+ *
+ * Output:
+ *
+     *  [null, 1, 2, 3, 3]
  */
 
 class LinkedListNode {
@@ -168,29 +173,43 @@ class Queue {
     }
 }
 
-function firstNonRepeating(inputStr) {
-    let q = new Queue();
-    let freqMap = {};
+class RecentCallCounter {
+    #q;
+    #result;
+    constructor() {
+       this.#q = new Queue();
+       this.#result = [null];
+    }
 
-    for (let i = 0; i < inputStr.length; i++) {
-        if (freqMap[inputStr[i]]) {
-            freqMap[inputStr[i]]++;
-        } else {
-            freqMap[inputStr[i]] = 1;
-            q.enqueue(inputStr[i]);
+    ping(currentTime) {
+        let width = currentTime - 3000;
+        this.#q.enqueue(currentTime);
+        while(this.#q.getFront() < width) {
+            this.#q.dequeue();
+        }
+        this.#result.push(this.#q.size());
+    }
+
+    print() {
+        console.log('result:', this.#result);
+    }
+}
+
+function driver(commands, times) {
+    let counter = null;
+
+    for (let i = 0; i < commands.length; i++) {
+        if (commands[i] === 'RecentCounter') {
+            counter = new RecentCallCounter()
+        } else if (commands[i] === 'ping') {
+            counter.ping(times[i]);
         }
     }
 
-    while(!q.isEmpty()) {
-        let deqed = q.dequeue();
-        if (freqMap[deqed] === 1) {
-            return deqed;
-        };
-    }
-
-    // no unique characters
-    return null;
+    counter.print();
 }
 
-console.log(firstNonRepeating("abcdsade"));
-console.log(firstNonRepeating("abcdsadebc"));
+driver(
+    ["RecentCounter", "ping", "ping", "ping", "ping"],
+    [[],               [1],   [100],  [3001],  [3002]]
+)

@@ -1,15 +1,3 @@
-/**
- * Given a string, "abcdsade",
- * return the first non-repeating character in this string.
- */
-
-/**
- * keep a track of frequency of every character,
- * and also put characters in the queue.
- * At the end, dequeue the queue and the first character with
- * frequency =1 is the answer
- */
-
 class LinkedListNode {
     constructor(data) {
         this.data = data;
@@ -17,7 +5,7 @@ class LinkedListNode {
     }
 
     display() {
-        console.log(this.data);
+        console.log('node data-', this.data);
     }
 }
 class LinkedList {
@@ -120,77 +108,19 @@ class LinkedList {
         return result;
     }
 }
-class Queue {
-    #list;
 
-    constructor() {
-        this.#list = new LinkedList();
+/**
+ * node : carry: 1
+ * num1 : 5 <- 6 <- 2
+ * num2 : 8 <- 4 <- 2
+ *
+ * sum : 1 <- 4 <- 0 <- 4
+ *
+ *
+ * res :
+ */
 
-    }
 
-    enqueue(val) {
-        this.#list.add(val);
-    }
+function addNums(n1, n2) {
 
-    #removeHead(list) {
-        let headToBeRemoved = list.head;
-        list.head = list.head.next;
-        return headToBeRemoved.data;
-    }
-
-    dequeue() {
-        let dequeuedEl = this.#list.head.data;
-        this.#removeHead(this.#list);
-        this.#list.length--;
-        return dequeuedEl;
-    }
-
-    getFront() {
-        return this.#list.head.data;
-    }
-
-    size() {
-        return this.#list.size();
-    }
-
-    isEmpty() {
-        return this.size() === 0;
-    }
-
-    clear() {
-        this.#list = new LinkedList();
-    }
-
-    print() {
-        console.log('front\n|\nV');
-        this.#list.print();
-        console.log('^\n|\nrear');
-    }
 }
-
-function firstNonRepeating(inputStr) {
-    let q = new Queue();
-    let freqMap = {};
-
-    for (let i = 0; i < inputStr.length; i++) {
-        if (freqMap[inputStr[i]]) {
-            freqMap[inputStr[i]]++;
-        } else {
-            freqMap[inputStr[i]] = 1;
-            q.enqueue(inputStr[i]);
-        }
-    }
-
-    while(!q.isEmpty()) {
-        let deqed = q.dequeue();
-        if (freqMap[deqed] === 1) {
-            return deqed;
-        };
-    }
-
-    // no unique characters
-    return null;
-}
-
-console.log(firstNonRepeating("abcdsade"));
-console.log(firstNonRepeating("abcdsadebc"));
