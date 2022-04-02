@@ -32,7 +32,7 @@ class BinaryTree {
         return node;
     }
 
-    nextInorderNode(node) {
+    nextInorderNode(node) { // next minimum node
         let nextNode = node;
         while (nextNode.left) {
             nextNode = nextNode.left;
@@ -40,31 +40,83 @@ class BinaryTree {
         return nextNode;
     }
 
-    searchNode(data) {
-        let currNode = this.root;
+    searchNode(data, currNode, withParent) {
+        if (!currNode) {
+            currNode = this.root;
+        }
+        let parent = null;
         while (currNode) {
             if (currNode.data === data) {
                 break;
             }
+            parent = currNode;
             if (currNode.data > data) {
                 currNode = currNode.left;
             } else {
                 currNode = currNode.right;
             }
         }
-        if (currNode.data === data) {
-            return currNode;
+        if (currNode?.data === data) {
+            return withParent ? [currNode, parent] : currNode;
         }
         return null;
     }
 
-    deleteNode(data) {
-        let toBeDeleted = this.searchNode(data);
-        let replacementNode = this.nextInorderNode(toBeDeleted);
+    delete(data) {
+        return this.#deleteNode(data, this.root);
+    }
+
+    isLeafNode(node) {
+        return !node.left && !node.right;
+    }
+
+    #deleteNode(data, node) {
+        let [toBeDeleted, parent] = this.searchNode(data, node, true);
+
+        if (!toBeDeleted) {
+            return null;
+        }
+
+        if(this.isLeafNode(toBeDeleted)) {
+            if (toBeDeleted.data >= parent.data) {
+                // right is to be deleted
+                parent.right = null;
+            } else {
+                // left is to be deleted
+                parent.left = null;
+            }
+            return toBeDeleted;
+        }
+        if (!toBeDeleted.left) {
+            // right is preset
+            if (toBeDeleted.data >= parent.data) {
+                // right is to be deleted
+                parent.right = toBeDeleted.right;
+            } else {
+                // left is to be deleted
+                parent.left = toBeDeleted.right;
+            }
+            return toBeDeleted;
+        } else if (!toBeDeleted.right) {
+            // only left is present
+            if (toBeDeleted.data >= parent.data) {
+                parent.right = toBeDeleted.left;
+            } else {
+                parent.left = toBeDeleted.left;
+            }
+            return toBeDeleted;
+        }
+
+        let replacementNode = this.nextInorderNode(toBeDeleted.right);
         toBeDeleted.data = replacementNode.data;
         if (toBeDeleted.right) {
-            this.deleteNode(replacementNode.data);
+            return this.#deleteNode(replacementNode.data, toBeDeleted.right);
         }
+        return toBeDeleted;
+    }
+
+    printTree() {
+        console.log(JSON.stringify(this, null, '   '));
     }
 }
 
@@ -77,9 +129,11 @@ function buildBst(arr) {
     return bt;
 }
 
+
+
 let arr = [
-    5, 7, 4, 9, 3, 2, 1, 8, 6
+    8, 3, 10, 1, 6 , 14, 4, 7, 16
 ];
 let bt = buildBst(arr);
-console.log(JSON.stringify(bt, null, '\t'));
-
+bt.delete(3);
+bt.printTree();
