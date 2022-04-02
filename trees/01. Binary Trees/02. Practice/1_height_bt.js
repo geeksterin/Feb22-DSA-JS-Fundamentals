@@ -65,7 +65,7 @@ function buildBT() {
 
 
 function getHeight(node) {
-    if (!node) {
+    if (node && !node.left && !node.right) {
         return 0;
     }
 
