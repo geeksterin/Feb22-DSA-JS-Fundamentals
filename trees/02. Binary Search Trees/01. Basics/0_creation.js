@@ -107,6 +107,7 @@ class BinaryTree {
             return toBeDeleted;
         }
 
+        // if both left and right of node to be deleted are present
         let replacementNode = this.nextInorderNode(toBeDeleted.right);
         toBeDeleted.data = replacementNode.data;
         if (toBeDeleted.right) {
